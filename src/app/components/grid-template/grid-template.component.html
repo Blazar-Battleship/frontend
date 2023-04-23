@@ -1,0 +1,19 @@
+<div class="grid" [class.enemy]="enemy">
+  <div class="letters-row">
+    <div class="letters-cell" *ngFor="let item of lettersRow; index as i">
+      {{ item }}
+    </div>
+  </div>
+  <div class="numbers-column">
+    <div class="number-cell" *ngFor="let item of lettersRow; index as i">
+      {{ i + 1 }}
+    </div>
+  </div>
+
+  <div
+    class="cells-container"
+    [ngStyle]="{ 'grid-template-columns': 'repeat(' + gridSize + ', 1fr)' }"
+  >
+    <ng-content></ng-content>
+  </div>
+</div>

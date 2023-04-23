@@ -14,7 +14,7 @@ export class GridComponent implements OnInit {
   gridSize = 10;
   grid: GridCell[] = [];
   selectedCell: undefined | GridCell = undefined;
-  lettersRow: string[] = [];
+
   isGridDisabled = false;
 
   constructor(private game: GameService) {}
@@ -28,11 +28,6 @@ export class GridComponent implements OnInit {
     }
     this.grid = arr;
 
-
-
-    for (let i = 97; i < this.gridSize + 97; i++) {
-     this.lettersRow.push(String.fromCharCode(i));
-    }
   }
 
   getRandomBoolean() {
@@ -41,7 +36,7 @@ export class GridComponent implements OnInit {
 
   getShotResult() {
     let result = this.game.getAttackResult(this.selectedCell!);
-    this.selectedCell!.status = result.isShipHit;
+     result.subscribe(res => this.selectedCell!.status = res.isShipHit );
     this.isGridDisabled = true
     console.log(this.selectedCell?.status);
   }

@@ -8,12 +8,14 @@ import { PlayScreenComponent } from './components/play-screen/play-screen.compon
 import { GridComponent } from './components/grid/grid.component';
 
 import {MatButtonModule} from '@angular/material/button';
+import { GridTemplateComponent } from './components/grid-template/grid-template.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayScreenComponent,
-    GridComponent
+    GridComponent,
+    GridTemplateComponent
   ],
   imports: [
     BrowserModule,

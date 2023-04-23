@@ -1,4 +1,5 @@
-<h1 class="currentPlayerName">{{ currentPlayer.name }} is playing</h1>
+<div class="page-container">
+  <h1 class="currentPlayerName">{{ currentPlayer.name }} is playing</h1>
 <h2 class="turn-number">Turn {{turnNumber}}</h2>
 <div class="grids-container">
   <app-grid
@@ -16,4 +17,6 @@
   <button mat-raised-button color="primary" (click)="closeNextPlayer()">
     Start
   </button>
+</div>
+
 </div>
