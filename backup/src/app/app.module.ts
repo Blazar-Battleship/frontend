@@ -15,7 +15,7 @@ import { MatCardModule } from '@angular/material/card';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationFormComponent } from './components/registration-form/registration-form.component';
-import { PlayerService } from './services/player.service';
+import { PlayerService } from './sevices/player.service';
 
 @NgModule({
   declarations: [

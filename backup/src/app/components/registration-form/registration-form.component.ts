@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-import { PlayerService } from '../../services/player.service';
+import { PlayerService } from '../../sevices/player.service';
 
 @Component({
   selector: 'app-registration-form',
@@ -112,14 +112,13 @@ addToList() {
 
   confirmPlayers() {
     const players = this.list.map(name => ({ id: 0, name, points: 0 }));
-    this.playerService.sendPlayers(players).subscribe({
-      next: response => {
+    this.playerService.sendPlayers(players).subscribe(
+      response => {
         console.log('Giocatori aggiunti:', response);
       },
-      error: error => {
+      error => {
         console.error('Errore durante l\'aggiunta dei giocatori:', error);
       }
-    });
+    );
   }
-
 }
