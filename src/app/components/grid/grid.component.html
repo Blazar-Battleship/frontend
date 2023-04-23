@@ -1,0 +1,49 @@
+<div class="grid-container">
+  <div class="grid" [class.enemy]="enemy">
+    <div class="letters-row">
+      <div class="letters-cell" *ngFor="let item of lettersRow; index as i">
+        {{ item }}
+      </div>
+    </div>
+    <div class="numbers-column">
+      <div class="number-cell" *ngFor="let item of lettersRow; index as i">
+        {{ i + 1 }}
+      </div>
+    </div>
+
+    <div
+      class="cells-container"
+      [ngStyle]="{ 'grid-template-columns': 'repeat(' + gridSize + ', 1fr)' }"
+    >
+      <div
+        *ngFor="let gridCell of grid"
+        class="grid-cell"
+        [ngClass]="{
+          'ship-was-hit': gridCell.status === true,
+          'cell-was-empty': gridCell.status === false,
+          selected: gridCell === selectedCell
+        }"
+        (click)="gridCell.status === undefined && (selectedCell = gridCell)"
+      ></div>
+      <div *ngIf="!enemy" class="grid-blocked-overlay"></div>
+      <div *ngIf="isGridDisabled" class="turn-finished-overlay"></div>
+    </div>
+  </div>
+  <div *ngIf="enemy" class="grid-button">
+    <ng-container *ngIf="!isGridDisabled; else finishButton">
+      <button
+        mat-raised-button
+        color="warn"
+        [disabled]="!selectedCell"
+        (click)="getShotResult()"
+      >
+        Shoot
+      </button>
+    </ng-container>
+    <ng-template #finishButton>
+      <button mat-raised-button color="primary" (click)="handleTurnFinished()">
+        Finish turn
+      </button>
+    </ng-template>
+  </div>
+</div>
