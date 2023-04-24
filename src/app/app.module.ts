@@ -11,6 +11,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { GridTemplateComponent } from './components/grid-template/grid-template.component';
 import { NgIconsModule } from '@ng-icons/core';
 import { tablerTrophyFilled } from '@ng-icons/tabler-icons';
+import { PlaceShipsScreenComponent } from './components/place-ships-screen/place-ships-screen.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { tablerTrophyFilled } from '@ng-icons/tabler-icons';
     AppComponent,
     PlayScreenComponent,
     PlayGridComponent,
-    GridTemplateComponent
+    GridTemplateComponent,
+    PlaceShipsScreenComponent
   ],
   imports: [
     BrowserModule,
