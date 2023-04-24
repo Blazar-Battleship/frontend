@@ -5,23 +5,27 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { PlayScreenComponent } from './components/play-screen/play-screen.component';
-import { GridComponent } from './components/grid/grid.component';
+import { PlayGridComponent } from './components/play-grid/play-grid.component';
 
 import {MatButtonModule} from '@angular/material/button';
 import { GridTemplateComponent } from './components/grid-template/grid-template.component';
+import { NgIconsModule } from '@ng-icons/core';
+import { tablerTrophyFilled } from '@ng-icons/tabler-icons';
+
 
 @NgModule({
   declarations: [
     AppComponent,
     PlayScreenComponent,
-    GridComponent,
+    PlayGridComponent,
     GridTemplateComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatButtonModule
+    MatButtonModule,
+    NgIconsModule.withIcons({ tablerTrophyFilled }),
   ],
   providers: [],
   bootstrap: [AppComponent]

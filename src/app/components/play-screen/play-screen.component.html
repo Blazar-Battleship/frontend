@@ -1,22 +1,26 @@
 <div class="page-container">
-  <h1 class="currentPlayerName">{{ currentPlayer.name }} is playing</h1>
-<h2 class="turn-number">Turn {{turnNumber}}</h2>
-<div class="grids-container">
-  <app-grid
-    [enemy]="currentCoalition.id === 1"
-    (finishTurn)="handleFinishTurn()"
-  ></app-grid>
-  <app-grid
-    [enemy]="currentCoalition.id === 0"
-    (finishTurn)="handleFinishTurn()"
-  ></app-grid>
-</div>
+  <div class="page-center">
+    <button mat-raised-button color="primary" class="leaderboard-button">
+      <ng-icon name="tablerTrophyFilled" size="24"></ng-icon>
+    </button>
+    <h1 class="currentPlayerName">{{ currentPlayer.name }} is playing</h1>
+    <h2 class="turn-number">Turn {{ turnNumber }}</h2>
+    <div class="grids-container">
+      <app-play-grid
+        [enemy]="currentCoalition.id === 1"
+        (finishTurn)="handleFinishTurn()"
+      ></app-play-grid>
+      <app-play-grid
+        [enemy]="currentCoalition.id === 0"
+        (finishTurn)="handleFinishTurn()"
+      ></app-play-grid>
+    </div>
 
-<div *ngIf="isNextPlayerOpen" class="next-player-screen">
-  <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
-  <button mat-raised-button color="primary" (click)="closeNextPlayer()">
-    Start
-  </button>
-</div>
-
+    <div *ngIf="isNextPlayerOpen" class="next-player-screen">
+      <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
+      <button mat-raised-button color="primary" (click)="closeNextPlayer()">
+        Start
+      </button>
+    </div>
+  </div>
 </div>

@@ -4,11 +4,11 @@ import { GridCell } from 'src/app/types';
 import { Howl } from 'howler';
 
 @Component({
-  selector: 'app-grid',
-  templateUrl: './grid.component.html',
-  styleUrls: ['./grid.component.scss'],
+  selector: 'app-play-grid',
+  templateUrl: './play-grid.component.html',
+  styleUrls: ['./play-grid.component.scss'],
 })
-export class GridComponent implements OnInit {
+export class PlayGridComponent implements OnInit {
   @Input() enemy = false;
   @Output() finishTurn = new EventEmitter();
 
