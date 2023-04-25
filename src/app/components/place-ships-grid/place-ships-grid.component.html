@@ -1,8 +1,5 @@
 <div class="grid-container">
   <app-grid-template [gridSize]="gridSize">
-    <div
-      *ngFor="let gridCell of grid,let i = index "
-      class="place-ships-grid-cell"
-    ></div>
+    <div [attr.data-coords]="gridCell.coordinates" *ngFor="let gridCell of grid" class="place-ships-grid-cell"></div>
   </app-grid-template>
 </div>

@@ -4,8 +4,9 @@
       Place your ships {{ currentPlayer.name }}!
     </h1>
     <div class="grid-area-container">
-      <div class="ships-container">
+      <div *ngIf="showShips" class="ships-container">
         <div
+
           class="ship draggable"
           [ngClass]="{'ship-selected': selectedShip === ship}"
           [attr.data-ship-length]="ship.length"
@@ -23,7 +24,7 @@
         <button mat-raised-button class="action-button" color="primary" (click)="rotateShip()">
           Rotate
         </button>
-        <button mat-raised-button class="action-button" color="primary">
+        <button mat-raised-button class="action-button" color="primary" (click)="handleClearAll()">
           Clear all
         </button>
       </div>

@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import interact from 'interactjs';
-import { Coalition, Player } from 'src/app/types';
+import { Coalition, Player, ShipSlice, Ship } from 'src/app/types';
 import { InteractEvent } from '@interactjs/types';
 import { InteractEvent as InteractEventValue } from '@interactjs/core/InteractEvent';
 @Component({
@@ -60,31 +60,166 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   ];
 
   ships = [Array(6), Array(5), Array(4), Array(4), Array(3)];
-  shipPositions = Array(5);
+  shipPositions: Ship[] = Array(5);
   selectedShip: undefined | any[];
   currentCoalition: Coalition = this.coalitions[0];
   currentPlayer: Player = this.players[0];
   turnNumber = 1;
   isNextPlayerOpen = false;
   currentShip: HTMLElement | undefined;
+  showShips = true
+  ngAfterViewInit(): void {
+    this.makeShipsDraggable();
+  }
+
+  makeShipsDraggable() {
+    const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
+      '.place-ships-grid-cell'
+    );
+    const thisClass = this;
+    let initialCells: HTMLDivElement[] = [];
+    interact('.ship').draggable({
+      listeners: {
+        start(event: InteractEvent) {
+          const target: HTMLDivElement = event.currentTarget as HTMLDivElement;
+          initialCells = thisClass.selectInitialCells(cells, target);
+        },
+        move(event: InteractEvent) {
+          const target: HTMLDivElement = event.currentTarget as HTMLDivElement;
+          thisClass.translateOnMove(event, target);
+          // check if the element is over a grid cell
+          thisClass.selectCellsOnHover(cells, target);
+        },
+        end(event: InteractEvent) {
+          const target = event.target;
+          const shipLength = Number(target.dataset['shipLength']);
+          const selectedCells: NodeListOf<HTMLDivElement> =
+            document.querySelectorAll('.place-ships-grid-cell.selected');
+          const areCellsFree = Array.from(selectedCells).every(
+            (cell) => !cell.classList.contains('occupied')
+          );
+          if (selectedCells.length === shipLength && areCellsFree) {
+            let minX = Math.min(
+              ...Array.from(selectedCells).map(
+                (cell) => cell.getBoundingClientRect().left
+              )
+            );
+            let minY = Math.min(
+              ...Array.from(selectedCells).map(
+                (cell) => cell.getBoundingClientRect().top
+              )
+            );
+            target.style.position = 'absolute';
+            target.style.left = minX + 'px';
+            target.style.top = minY + 'px';
+            target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
+
+            let shipArray: ShipSlice[] = [];
+            selectedCells.forEach((cell) => {
+              let coordsArray = cell.dataset['coords']
+                ?.split(',')
+                .map((c) => Number(c))!;
+              let coordsObj: ShipSlice = {
+                id: 0,
+                x: coordsArray[0],
+                y: coordsArray[1],
+              };
+              shipArray.push(coordsObj);
+              cell.classList.add('occupied');
+            });
+            thisClass.shipPositions[Number(target.id)] = {
+              id: Number(target.id),
+              shipSlices: shipArray,
+            };
+          } else {
+            target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
+            initialCells.forEach((cell) => {
+              cell.classList.add('occupied');
+            });
+          }
+          selectedCells.forEach((cell) => {
+            cell.classList.remove('selected');
+          });
+          target.setAttribute('data-x', '0');
+          target.setAttribute('data-y', '0');
+        },
+      },
+    });
+  }
 
   rotateShip() {
     let selectedShipElement: HTMLDivElement =
       document.querySelector('.ship-selected')!;
     let direction = selectedShipElement.style.flexDirection;
-
+    const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
+      '.place-ships-grid-cell'
+    );
+    let initialCells = this.selectInitialCells(cells, selectedShipElement);
     if (direction === 'column' || direction === '') {
       selectedShipElement.style.flexDirection = 'row';
     } else {
       selectedShipElement.style.flexDirection = 'column';
     }
 
-    const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
-      '.place-ships-grid-cell'
+    this.selectCellsOnHover(cells, selectedShipElement);
+
+    const shipLength = Number(selectedShipElement.dataset['shipLength']);
+    const selectedCells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
+      '.place-ships-grid-cell.selected'
     );
+
+    const areCellsFree = Array.from(selectedCells).every(
+      (cell) => !cell.classList.contains('occupied')
+    );
+    if (selectedCells.length === shipLength && areCellsFree) {
+      let minX = Math.min(
+        ...Array.from(selectedCells).map(
+          (cell) => cell.getBoundingClientRect().left
+        )
+      );
+      let minY = Math.min(
+        ...Array.from(selectedCells).map(
+          (cell) => cell.getBoundingClientRect().top
+        )
+      );
+      selectedShipElement.style.position = 'absolute';
+      selectedShipElement.style.left = minX + 'px';
+      selectedShipElement.style.top = minY + 'px';
+      selectedShipElement.style.transform =
+        'translate(' + 0 + 'px, ' + 0 + 'px)';
+
+      let shipArray: ShipSlice[] = [];
+      selectedCells.forEach((cell) => {
+        let coordsArray = cell.dataset['coords']
+          ?.split(',')
+          .map((c) => Number(c))!;
+        let coordsObj: ShipSlice = {
+          id: 0,
+          x: coordsArray[0],
+          y: coordsArray[1],
+        };
+        shipArray.push(coordsObj);
+        cell.classList.add('occupied');
+      });
+      this.shipPositions[Number(selectedShipElement.id)] = {
+        id: Number(selectedShipElement.id),
+        shipSlices: shipArray,
+      };
+    } else {
+      selectedShipElement.style.flexDirection = direction;
+      initialCells.forEach((cell) => {
+        cell.classList.add('occupied');
+      });
+    }
+    selectedCells.forEach((cell) => {
+      cell.classList.remove('selected');
+    });
+  }
+
+  selectCellsOnHover(cells: NodeListOf<HTMLDivElement>, ship: HTMLDivElement) {
     cells.forEach((cell) => {
       const cellCoords = cell.getBoundingClientRect();
-      const shipCoords = selectedShipElement.getBoundingClientRect();
+      const shipCoords = ship.getBoundingClientRect();
       const cellWidth = cell.offsetWidth;
       if (
         cellCoords.left + cellWidth / 2 >= shipCoords.left &&
@@ -97,129 +232,52 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
         cell.classList.remove('selected');
       }
     });
-    const target = selectedShipElement;
-    const shipLength = Number(target.dataset['shipLength']);
-    const selectedCells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
-      '.place-ships-grid-cell.selected'
-    );
-    if (selectedCells.length === shipLength) {
-      let minX = Math.min(
-        ...Array.from(selectedCells).map(
-          (cell) => cell.getBoundingClientRect().left
-        )
-      );
-      let minY = Math.min(
-        ...Array.from(selectedCells).map(
-          (cell) => cell.getBoundingClientRect().top
-        )
-      );
-      target.style.position = 'absolute';
-      target.style.left = minX + 'px';
-      target.style.top = minY + 'px';
-      target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
-
-      let occupiedCells: number[] = [];
-      selectedCells.forEach((cell) => {
-        let occupiedIndex = Array.from(cells).findIndex((c) => c === cell);
-        occupiedCells.push(occupiedIndex);
-
-        cell.classList.add('occupied');
-      });
-      this.shipPositions[Number(target.id)] = occupiedCells;
-      console.log(this.shipPositions);
-    } else {
-      selectedShipElement.style.flexDirection = direction;
-    }
-    selectedCells.forEach((cell) => {
-      cell.classList.remove('selected');
-    });
-    console.log(this.shipPositions);
   }
-  ngAfterViewInit(): void {
+
+  selectInitialCells(
+    cells: NodeListOf<HTMLDivElement>,
+    ship: HTMLDivElement
+  ): HTMLDivElement[] {
+    let cellsArr: HTMLDivElement[] = [];
+    cells.forEach((cell) => {
+      const cellCoords = cell.getBoundingClientRect();
+      const shipCoords = ship.getBoundingClientRect();
+      const cellWidth = cell.offsetWidth;
+      if (
+        cellCoords.left + cellWidth / 2 >= shipCoords.left &&
+        cellCoords.right - cellWidth / 2 + 2 <= shipCoords.right &&
+        cellCoords.top + cellWidth / 2 >= shipCoords.top &&
+        cellCoords.bottom - cellWidth / 2 + 1 <= shipCoords.bottom
+      ) {
+        cell.classList.remove('occupied');
+        cellsArr.push(cell);
+      }
+    });
+    return cellsArr;
+  }
+  translateOnMove(event: InteractEvent, target: HTMLDivElement) {
+    const x =
+      (parseFloat(target.getAttribute('data-x' as string)!) || 0) + event.dx;
+    const y =
+      (parseFloat(target.getAttribute('data-y' as string)!) || 0) + event.dy;
+    // translate the element
+    target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
+    target.setAttribute('data-x', x.toString());
+    target.setAttribute('data-y', y.toString());
+  }
+
+  handleClearAll() {
+    this.showShips = false;
+    setTimeout(() => {
+      this.showShips = true;
+
+    }, 0);
     const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
       '.place-ships-grid-cell'
     );
-    let self = this;
-    this.ships.forEach((ship) => {
-      interact('.ship').draggable({
-        listeners: {
-          start(event: InteractEvent) {},
-          move(event: InteractEvent) {
-            const target = event.currentTarget;
-            const x =
-              (parseFloat(target.getAttribute('data-x' as string)!) || 0) +
-              event.dx;
-            const y =
-              (parseFloat(target.getAttribute('data-y' as string)!) || 0) +
-              event.dy;
 
-            // translate the element
-            target.style.transform = 'translate(' + x + 'px, ' + y + 'px)';
-
-            // check if the element is over a grid cell
-
-            cells.forEach((cell) => {
-              const cellCoords = cell.getBoundingClientRect();
-              const shipCoords = target.getBoundingClientRect();
-              const cellWidth = cell.offsetWidth;
-              if (
-                cellCoords.left + cellWidth / 2 >= shipCoords.left &&
-                cellCoords.right - cellWidth / 2 + 2 <= shipCoords.right &&
-                cellCoords.top + cellWidth / 2 >= shipCoords.top &&
-                cellCoords.bottom - cellWidth / 2 + 1 <= shipCoords.bottom
-              ) {
-                cell.classList.add('selected');
-              } else {
-                cell.classList.remove('selected');
-              }
-            });
-
-            target.setAttribute('data-x', x.toString());
-            target.setAttribute('data-y', y.toString());
-          },
-          end(event: InteractEvent) {
-            const target = event.target;
-            const shipLength = Number(target.dataset['shipLength']);
-            const selectedCells: NodeListOf<HTMLDivElement> =
-              document.querySelectorAll('.place-ships-grid-cell.selected');
-            if (selectedCells.length === shipLength) {
-              let minX = Math.min(
-                ...Array.from(selectedCells).map(
-                  (cell) => cell.getBoundingClientRect().left
-                )
-              );
-              let minY = Math.min(
-                ...Array.from(selectedCells).map(
-                  (cell) => cell.getBoundingClientRect().top
-                )
-              );
-              target.style.position = 'absolute';
-              target.style.left = minX + 'px';
-              target.style.top = minY + 'px';
-              target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
-
-              let occupiedCells: number[] = [];
-              selectedCells.forEach((cell) => {
-                let occupiedIndex = Array.from(cells).findIndex(
-                  (c) => c === cell
-                );
-                occupiedCells.push(occupiedIndex);
-
-                cell.classList.add('occupied');
-              });
-              self.shipPositions[Number(target.id)] = occupiedCells;
-              console.log(self.shipPositions);
-            } else {
-              target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
-            }
-            selectedCells.forEach((cell) => {
-              cell.classList.remove('selected');
-            });
-            target.setAttribute('data-x', '0');
-            target.setAttribute('data-y', '0');
-          },
-        },
-      });
-    });
+    cells.forEach((cell)=>{
+      cell.classList.remove("occupied")
+    })
   }
 }

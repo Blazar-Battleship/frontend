@@ -29,3 +29,15 @@ export interface Game {
   id: number;
   coalitions: Coalition[];
 }
+export interface ShipSlice {
+  id: number;
+  x: number;
+  y: number;
+}
+export interface Ship {
+  id: number;
+  shipSlices:ShipSlice[]
+}
+
+
+

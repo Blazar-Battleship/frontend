@@ -16,14 +16,13 @@ export class PlaceShipsGridComponent implements OnInit, OnChanges{
     let arr: GridCell[] = [];
     for (let i = 0; i < this.gridSize; i++) {
       for (let j = 0; j < this.gridSize; j++) {
-        arr.push({ coordinates: [i, j], status: undefined });
+        arr.push({ coordinates: [j, i], status: undefined });
       }
     }
     this.grid = arr;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    
   }
 
 }
