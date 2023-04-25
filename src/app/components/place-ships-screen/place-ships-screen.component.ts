@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
 import interact from 'interactjs';
 import { Coalition, Player, ShipSlice, Ship } from 'src/app/types';
 import { InteractEvent } from '@interactjs/types';
@@ -7,6 +7,7 @@ import { InteractEvent as InteractEventValue } from '@interactjs/core/InteractEv
   selector: 'app-place-ships-screen',
   templateUrl: './place-ships-screen.component.html',
   styleUrls: ['./place-ships-screen.component.scss'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class PlaceShipsScreenComponent implements AfterViewInit {
   players: Player[] = [
@@ -43,19 +44,19 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   coalitions: Coalition[] = [
     {
       id: 0,
-      name: 'any',
+      name: 'blue',
       gameId: 0,
       game: 'any',
       grids: [],
-      players: this.players,
+      players: [this.players[0], this.players[2]],
     },
     {
       id: 1,
-      name: 'any',
+      name: 'red',
       gameId: 0,
       game: 'any',
       grids: [],
-      players: this.players,
+      players: [this.players[1], this.players[3]],
     },
   ];
 
@@ -64,11 +65,9 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   selectedShip: undefined | any[];
   currentCoalition: Coalition = this.coalitions[0];
   currentPlayer: Player = this.players[0];
-  turnNumber = 1;
   isNextPlayerOpen = false;
-  currentShip: HTMLElement | undefined;
-  showShips = true
   ngAfterViewInit(): void {
+    console.log(this.shipPositions[2])
     this.makeShipsDraggable();
   }
 
@@ -89,9 +88,22 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
           thisClass.translateOnMove(event, target);
           // check if the element is over a grid cell
           thisClass.selectCellsOnHover(cells, target);
+          const selectedCells: NodeListOf<HTMLDivElement> =
+            document.querySelectorAll('.place-ships-grid-cell.selected');
+          if (
+            Array.from(selectedCells).some((c) =>
+              c.classList.contains('occupied')
+            )
+          ) {
+            target.classList.add('ship-error');
+          } else {
+            target.classList.remove('ship-error');
+          }
         },
         end(event: InteractEvent) {
           const target = event.target;
+          target.classList.remove('ship-error');
+
           const shipLength = Number(target.dataset['shipLength']);
           const selectedCells: NodeListOf<HTMLDivElement> =
             document.querySelectorAll('.place-ships-grid-cell.selected');
@@ -99,21 +111,14 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
             (cell) => !cell.classList.contains('occupied')
           );
           if (selectedCells.length === shipLength && areCellsFree) {
-            let minX = Math.min(
-              ...Array.from(selectedCells).map(
-                (cell) => cell.getBoundingClientRect().left
-              )
-            );
-            let minY = Math.min(
-              ...Array.from(selectedCells).map(
-                (cell) => cell.getBoundingClientRect().top
-              )
-            );
+            let firstCell = selectedCells[0];
+            target.style.transform = 'translate(' + -1 + 'px, ' + -1 + 'px)';
+            target.setAttribute('data-x', '0');
+            target.setAttribute('data-y', '0');
             target.style.position = 'absolute';
-            target.style.left = minX + 'px';
-            target.style.top = minY + 'px';
-            target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
 
+            target.remove();
+            firstCell.append(target);
             let shipArray: ShipSlice[] = [];
             selectedCells.forEach((cell) => {
               let coordsArray = cell.dataset['coords']
@@ -132,7 +137,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
               shipSlices: shipArray,
             };
           } else {
-            target.style.transform = 'translate(' + 0 + 'px, ' + 0 + 'px)';
+            target.style.transform = 'translate(' + -1 + 'px, ' + -1 + 'px)';
             initialCells.forEach((cell) => {
               cell.classList.add('occupied');
             });
@@ -172,22 +177,6 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
       (cell) => !cell.classList.contains('occupied')
     );
     if (selectedCells.length === shipLength && areCellsFree) {
-      let minX = Math.min(
-        ...Array.from(selectedCells).map(
-          (cell) => cell.getBoundingClientRect().left
-        )
-      );
-      let minY = Math.min(
-        ...Array.from(selectedCells).map(
-          (cell) => cell.getBoundingClientRect().top
-        )
-      );
-      selectedShipElement.style.position = 'absolute';
-      selectedShipElement.style.left = minX + 'px';
-      selectedShipElement.style.top = minY + 'px';
-      selectedShipElement.style.transform =
-        'translate(' + 0 + 'px, ' + 0 + 'px)';
-
       let shipArray: ShipSlice[] = [];
       selectedCells.forEach((cell) => {
         let coordsArray = cell.dataset['coords']
@@ -267,17 +256,29 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   }
 
   handleClearAll() {
-    this.showShips = false;
-    setTimeout(() => {
-      this.showShips = true;
-
-    }, 0);
+    const shipsContainer = document.querySelector('.ships-container');
+    const ships: NodeListOf<HTMLDivElement> =
+      document.querySelectorAll('.ship');
+    ships.forEach((ship) => {
+      ship.style.cssText = '';
+      ship.remove();
+      shipsContainer?.append(ship);
+    });
     const cells: NodeListOf<HTMLDivElement> = document.querySelectorAll(
       '.place-ships-grid-cell'
     );
+    cells.forEach((cell) => {
+      cell.classList.remove('occupied');
+    });
+  }
 
-    cells.forEach((cell)=>{
-      cell.classList.remove("occupied")
-    })
+  isShipPositionsFull(): boolean{
+    for (let index = 0; index < this.shipPositions.length; index++) {
+      const element = this.shipPositions[index];
+      if(element == undefined) {
+        return false
+      }
+    }
+    return true
   }
 }

@@ -17,11 +17,11 @@ export interface Player {
 }
 
 export interface Coalition {
-  id: number;
-  name: any;
-  gameId: number;
-  game: any;
-  grids: any[];
+  id?: number;
+  name: string;
+  gameId?: number;
+  game?: any;
+  grids?: any[];
   players: Player[];
 }
 

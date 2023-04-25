@@ -8,11 +8,12 @@
     background-color: white;
     border: 1px solid rgba($color: #000000, $alpha: 0.6);
     cursor: pointer;
+    overflow: visible;
 
     &.selected {
       z-index: 10;
       background-color: rgba(0, 255, 136, 0.3);
     }
-    
+
   }
 }

@@ -4,28 +4,44 @@
       Place your ships {{ currentPlayer.name }}!
     </h1>
     <div class="grid-area-container">
-      <div *ngIf="showShips" class="ships-container">
+      <div class="ships-container">
         <div
-
           class="ship draggable"
-          [ngClass]="{'ship-selected': selectedShip === ship}"
+          [ngClass]="{ 'ship-selected': selectedShip === ship }"
           [attr.data-ship-length]="ship.length"
-          *ngFor="let ship of ships, let shipIndex = index"
+          *ngFor="let ship of ships; let shipIndex = index"
           [id]="shipIndex"
           (click)="selectedShip = ship"
         >
-        <div *ngFor="let item of ship" class="ship-slice">
-
+          <div *ngFor="let item of ship" class="ship-slice"></div>
         </div>
-      </div>
       </div>
       <app-place-ships-grid></app-place-ships-grid>
       <div class="action-buttons">
-        <button mat-raised-button class="action-button" color="primary" (click)="rotateShip()">
+        <button
+          mat-raised-button
+          class="action-button"
+          color="primary"
+          (click)="rotateShip()"
+          [disabled]="!selectedShip"
+        >
           Rotate
         </button>
-        <button mat-raised-button class="action-button" color="primary" (click)="handleClearAll()">
+        <button
+          mat-raised-button
+          class="action-button"
+          color="primary"
+          (click)="handleClearAll()"
+        >
           Clear all
+        </button>
+        <button
+          mat-raised-button
+          class="action-button"
+          color="accent"
+          [disabled]="!isShipPositionsFull()"
+        >
+          Confirm
         </button>
       </div>
     </div>

@@ -1,8 +1,34 @@
 /* You can add global styles to this file, and also import other style files */
-*{
-  margin:0;
-  padding:0;
+* {
+  margin: 0;
+  padding: 0;
   box-sizing: border-box;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; min-width: fit-content;}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  min-width: fit-content;
+  .ship {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(144, 229, 255, 0.614);
+    border: 1px solid rgba(0, 0, 0, 0.594);
+    z-index: 100;
+
+    &.ship-selected {
+      box-shadow: 0 0 10px rgba(0, 255, 55, 0.719);
+    }
+    &.ship-error {
+      z-index: 200;
+      background-color: rgba(255, 0, 0, 0.5) !important;
+    }
+    .ship-slice {
+      width: 40px;
+      height: 40px;
+    }
+  }
+}
