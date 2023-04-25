@@ -40,6 +40,7 @@
           class="action-button"
           color="accent"
           [disabled]="!isShipPositionsFull()"
+          (click)="handleFinishTurn()"
         >
           Confirm
         </button>
@@ -49,5 +50,20 @@
     <div *ngIf="isNextPlayerOpen" class="next-player-screen">
       <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
     </div>
+  </div>
+
+
+  <div *ngIf="isNextPlayerOpen" class="next-player-screen">
+    <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
+    <button mat-raised-button color="primary" (click)="closeNextPlayer()">
+      Start
+    </button>
+  </div>
+
+  <div *ngIf="isStartGameOpen" class="start-game-screen">
+    <h2>Ready to Play the game?</h2>
+    <button mat-raised-button color="primary" routerLink="/play">
+      Start
+    </button>
   </div>
 </div>

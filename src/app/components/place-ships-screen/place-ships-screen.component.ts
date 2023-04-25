@@ -16,28 +16,28 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
       name: 'Ali',
       points: 0,
       coalitionId: 0,
-      coalition: undefined,
+      coalition: 'blue',
     },
     {
       id: 1,
       name: 'Miguel',
       points: 0,
       coalitionId: 1,
-      coalition: undefined,
+      coalition: 'red',
     },
     {
       id: 2,
       name: 'Ilaria',
       points: 0,
       coalitionId: 0,
-      coalition: undefined,
+      coalition: 'blue',
     },
     {
       id: 3,
       name: 'Giulia',
       points: 0,
       coalitionId: 1,
-      coalition: undefined,
+      coalition: 'red',
     },
   ];
 
@@ -63,11 +63,15 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   ships = [Array(6), Array(5), Array(4), Array(4), Array(3)];
   shipPositions: Ship[] = Array(5);
   selectedShip: undefined | any[];
-  currentCoalition: Coalition = this.coalitions[0];
   currentPlayer: Player = this.players[0];
+  currentCoalition: string = this.currentPlayer.coalition;
   isNextPlayerOpen = false;
+  isStartGameOpen = false;
+  redCoalitionShips: Ship[] = [];
+  blueCoalitionShips: Ship[] = [];
+
   ngAfterViewInit(): void {
-    console.log(this.shipPositions[2])
+    console.log(this.shipPositions[2]);
     this.makeShipsDraggable();
   }
 
@@ -244,6 +248,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
     });
     return cellsArr;
   }
+
   translateOnMove(event: InteractEvent, target: HTMLDivElement) {
     const x =
       (parseFloat(target.getAttribute('data-x' as string)!) || 0) + event.dx;
@@ -272,13 +277,42 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
     });
   }
 
-  isShipPositionsFull(): boolean{
+  isShipPositionsFull(): boolean {
     for (let index = 0; index < this.shipPositions.length; index++) {
       const element = this.shipPositions[index];
-      if(element == undefined) {
-        return false
+      if (element == undefined) {
+        return false;
       }
     }
-    return true
+    return true;
+  }
+
+  closeNextPlayer() {
+    this.isNextPlayerOpen = false;
+  }
+
+  handleFinishTurn() {
+    if (this.currentPlayer.coalition === 'red') {
+      this.redCoalitionShips.push(...this.shipPositions);
+    } else {
+      this.blueCoalitionShips.push(...this.shipPositions);
+    }
+
+    console.log('blueCoalitionShips', this.blueCoalitionShips);
+    console.log('redCoalitionShips', this.redCoalitionShips);
+    this.shipPositions = Array(5);
+    this.handleClearAll();
+    let currentPlayerIndex = this.players.findIndex(
+      (p) => p === this.currentPlayer
+    );
+
+    if (currentPlayerIndex + 1 === this.players.length) {
+      this.isStartGameOpen = true;
+    } else {
+      this.currentPlayer = this.players[++currentPlayerIndex];
+      this.currentCoalition = this.currentPlayer.coalition;
+      console.log(this.currentCoalition);
+      this.isNextPlayerOpen = true;
+    }
   }
 }
