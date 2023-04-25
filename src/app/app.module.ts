@@ -11,16 +11,23 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistrationFormComponent } from './components/registration-form/registration-form.component';
 import { PlayerService } from './services/player.service';
+import { HeaderComponent } from './components/header/header.component';
+
+
+
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegistrationFormComponent
+    RegistrationFormComponent,
+    HeaderComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +41,9 @@ import { PlayerService } from './services/player.service';
     AppRoutingModule,
     ReactiveFormsModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatSidenavModule,
+    MatToolbarModule
   ],
   providers: [PlayerService],
   bootstrap: [AppComponent]

@@ -12,63 +12,32 @@ import { PlayerService } from '../../services/player.service';
 export class RegistrationFormComponent {
   registrationForm: FormGroup;
   list: string[] = [];
-  showHint: boolean = false;
-  showError: boolean = false;
-  disableAddButton: boolean = false;
-
+  showHint = false;
+  showError = false;
+  disableAddButton = false;
 
   constructor(private fb: FormBuilder, private playerService: PlayerService) {
     this.registrationForm = this.fb.group({
       playerToAdd: [
         '',
-        [Validators.required, Validators.pattern(/^[a-zA-Z]+[a-zA-Z\s]*$/)],
+        [
+          Validators.pattern(/^\S.*$/)],
       ],
     });
 
-    this.registrationForm
-      .get('playerToAdd')
-      ?.statusChanges.subscribe((status) => {
-        if (
-          status === 'INVALID' &&
-          this.registrationForm.get('playerToAdd')?.value
-        ) {
-          this.showError = true;
-          this.disableAddButton = true;
-        } else {
-          this.showError = false;
-          this.disableAddButton = false;
-        }
-      });
-
-    this.registrationForm
-      .get('playerToAdd')
-      ?.valueChanges.subscribe((value) => {
-        this.checkInputLength();
-        this.checkListValues();
-      });
+    this.registrationForm.get('playerToAdd')?.valueChanges.subscribe(() => {
+      this.checkInputValidity();
+    });
   }
 
-  checkInputLength() {
+  getInputLength(): number {
     const playerToAdd = this.registrationForm.get('playerToAdd');
-    const value = playerToAdd?.value.trim();
-    if (value && value.length > 20) {
-      this.showError = true;
-      this.disableAddButton = true;
-      playerToAdd?.setErrors({ maxlength: true });
-    } else if (this.list.includes(value)) {
-      this.showError = true;
-      this.disableAddButton = true;
-      playerToAdd?.setErrors({ exists: true });
-    } else {
-      this.showError = false;
-      this.disableAddButton = false;
-      playerToAdd?.setErrors(null);
-    }
+    return playerToAdd?.value.trim().replace(/\s+/g, ' ').split(' ').join('').length;
   }
 
-  checkListValues() {
+  checkInputValidity() {
     const playerToAdd = this.registrationForm.get('playerToAdd');
-    if (playerToAdd && playerToAdd.value) {
+    if (playerToAdd && playerToAdd.dirty && !playerToAdd.errors) {
       const value = playerToAdd.value.trim();
       if (value.length > 20) {
         this.showError = true;
@@ -88,11 +57,24 @@ export class RegistrationFormComponent {
     }
   }
 
+  isValidPlayer() {
+    const playerToAdd = this.registrationForm.get('playerToAdd')?.value;
+    return (
+      !this.disableAddButton &&
+      playerToAdd &&
+      playerToAdd.length > 0 &&
+      playerToAdd.length <= 20 &&
+      !this.registrationForm.get('playerToAdd')?.hasError('pattern') &&
+      !this.registrationForm.get('playerToAdd')?.hasError('maxlength') &&
+      !this.registrationForm.get('playerToAdd')?.hasError('exists')
+    );
+  }
+
   addToList() {
     const playerToAdd = this.registrationForm.get('playerToAdd');
     if (playerToAdd && playerToAdd.value) {
       const value = playerToAdd.value.trim();
-      const pattern = /^[a-zA-Z]+[a-zA-Z\s]*$/;
+      const pattern = /^\S.*$/;
       if (!pattern.test(value)) {
         playerToAdd.setErrors({ pattern: true });
         return;
@@ -108,17 +90,28 @@ export class RegistrationFormComponent {
         return;
       }
       this.list.push(value);
-      playerToAdd.setValue('');
-      playerToAdd.markAsUntouched();
-      playerToAdd.markAsPristine();
-      playerToAdd.updateValueAndValidity();
+      this.clearInput();
     }
+  }
+
+  clearInput() {
+    const playerToAdd = this.registrationForm.get('playerToAdd');
+    playerToAdd?.setValue('');
+    playerToAdd?.markAsUntouched();
+    playerToAdd?.markAsPristine();
+    playerToAdd?.updateValueAndValidity();
   }
 
   removeFromList(index: number) {
     this.list.splice(index, 1);
     this.registrationForm.get('playerToAdd')?.markAsUntouched();
+    this.showError = false; // aggiungi questa riga per nascondere l'errore dopo aver svuotato l'input
+  this.disableAddButton = false;
+  }  updateInputHint() {
+    const inputLength = this.getInputLength();
+    this.showHint = inputLength > 0 && inputLength < 20;
   }
+
 
   confirmPlayers() {
     const players = this.list.map((name) => ({ id: 0, name, points: 0 }));

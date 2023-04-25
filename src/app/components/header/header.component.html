@@ -1,0 +1,26 @@
+<mat-toolbar color="primary">
+  <!-- <button mat-icon-button (click)="toggleNavbar()">
+    <mat-icon>menu</mat-icon>
+  </button> -->
+  <div class="title">BattleShip</div>
+  <!--<span class="spacer">cooperative version</span> -->
+  <div class="actions-icon"><button mat-icon-button (click)="toggleDarkMode()">
+    <mat-icon (click)="toggleDarkMode()">lightbulb_outline</mat-icon>
+  </button>
+  <button mat-icon-button class="example-icon" aria-label="Example icon-button with share icon">
+      <mat-icon>share</mat-icon>
+    </button>
+  <button mat-icon-button (click)="quitGame()">
+    <mat-icon>exit_to_app</mat-icon>
+  </button>
+</div>
+</mat-toolbar>
+
+<!-- <div class="navbar" [ngClass]="{'show-navbar': navbarVisible}">
+  <ul>
+    <li><a href="#">Link 1</a></li>
+    <li><a href="#">Link 2</a></li>
+    <li><a href="#">Link 3</a></li>
+  </ul>
+</div> -->
+
