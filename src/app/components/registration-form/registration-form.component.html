@@ -1,0 +1,103 @@
+<div class="page-container">
+  <div class="headings">
+    <h1>Ready to set sails?</h1>
+    <h2 *ngIf="list.length < 2; else confirmCrew">
+      Who will command the fleets?
+    </h2>
+    <ng-template #confirmCrew>
+      <h2>Confirm the crew?</h2>
+    </ng-template>
+
+    <h4 *ngIf="list.length < 2">Just six brave souls would be enough</h4>
+    <h4 *ngIf="list.length >= 2">Up to 6 fleet Commanders</h4>
+  </div>
+
+  <form [formGroup]="registrationForm" novalidate (submit)="addToList()">
+    <mat-form-field *ngIf="list.length < 6">
+      <mat-label>Username</mat-label>
+      <input
+        matInput
+        formControlName="playerToAdd"
+        [readonly]="list.length >= 6"
+        (input)="checkInputValidity()"
+      />
+      <button
+        mat-icon-button
+        matSuffix
+        *ngIf="registrationForm.get('playerToAdd')?.hasError('maxlength')"
+        (click)="registrationForm.get('playerToAdd')?.setValue('')"
+      >
+        <mat-icon>clear</mat-icon>
+      </button>
+      <mat-hint *ngIf="!showError" align="end"
+        >{{
+          getInputLength() || 0
+        }}/20</mat-hint
+      >
+
+      <mat-error
+        *ngIf="
+          registrationForm.get('playerToAdd')?.hasError('pattern') ||
+          registrationForm.get('playerToAdd')?.hasError('maxlength') ||
+          registrationForm.get('playerToAdd')?.hasError('exists')
+        "
+      >
+        <ng-container
+          *ngIf="registrationForm.get('playerToAdd')?.hasError('pattern')"
+        >
+          Error: empty
+        </ng-container>
+        <ng-container
+          *ngIf="registrationForm.get('playerToAdd')?.hasError('maxlength')"
+        >
+          Error: max 20chars
+        </ng-container>
+        <ng-container
+          *ngIf="registrationForm.get('playerToAdd')?.hasError('exists')"
+        >
+          Error: username already exists
+        </ng-container>
+      </mat-error>
+    </mat-form-field>
+
+    <div *ngIf="list.length < 6">
+      <button
+        mat-raised-button
+        color="primary"
+        type="button"
+        [disabled]="!isValidPlayer()"
+        (click)="addToList(); registrationForm.get('playerToAdd')?.reset()"
+      >
+        Add player
+      </button>
+    </div>
+  </form>
+
+  <div class="player-list">
+    <ul>
+      <li *ngFor="let player of list">
+        {{ player }}
+        <button
+          mat-icon-button
+          color="warn"
+          (click)="removeFromList(list.indexOf(player))"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+      </li>
+
+      <div *ngIf="list.length >= 2 && list.length <= 6">
+        <button
+          mat-raised-button
+          color="primary"
+          type="button"
+          class="confirm"
+          (click)="confirmPlayers()"
+          [disabled]="list.length < 2"
+        >
+          Confirm players
+        </button>
+      </div>
+    </ul>
+  </div>
+</div>
