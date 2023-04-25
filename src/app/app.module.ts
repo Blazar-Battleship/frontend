@@ -12,6 +12,7 @@ import { GridTemplateComponent } from './components/grid-template/grid-template.
 import { NgIconsModule } from '@ng-icons/core';
 import { tablerTrophyFilled } from '@ng-icons/tabler-icons';
 import { PlaceShipsScreenComponent } from './components/place-ships-screen/place-ships-screen.component';
+import { PlaceShipsGridComponent } from './components/place-ships-grid/place-ships-grid.component';
 
 
 @NgModule({
@@ -20,7 +21,8 @@ import { PlaceShipsScreenComponent } from './components/place-ships-screen/place
     PlayScreenComponent,
     PlayGridComponent,
     GridTemplateComponent,
-    PlaceShipsScreenComponent
+    PlaceShipsScreenComponent,
+    PlaceShipsGridComponent
   ],
   imports: [
     BrowserModule,

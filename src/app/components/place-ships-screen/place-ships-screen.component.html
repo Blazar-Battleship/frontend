@@ -1,1 +1,36 @@
-<p>place-ships-screen works!</p>
+<div class="page-container">
+  <div class="page-center">
+    <h1 class="current-player-name">
+      Place your ships {{ currentPlayer.name }}!
+    </h1>
+    <div class="grid-area-container">
+      <div class="ships-container">
+        <div
+          class="ship draggable"
+          [ngClass]="{'ship-selected': selectedShip === ship}"
+          [attr.data-ship-length]="ship.length"
+          *ngFor="let ship of ships, let shipIndex = index"
+          [id]="shipIndex"
+          (click)="selectedShip = ship"
+        >
+        <div *ngFor="let item of ship" class="ship-slice">
+
+        </div>
+      </div>
+      </div>
+      <app-place-ships-grid></app-place-ships-grid>
+      <div class="action-buttons">
+        <button mat-raised-button class="action-button" color="primary" (click)="rotateShip()">
+          Rotate
+        </button>
+        <button mat-raised-button class="action-button" color="primary">
+          Clear all
+        </button>
+      </div>
+    </div>
+
+    <div *ngIf="isNextPlayerOpen" class="next-player-screen">
+      <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
+    </div>
+  </div>
+</div>

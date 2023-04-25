@@ -1,0 +1,52 @@
+.page-container {
+  background: linear-gradient(rgb(227, 255, 255), rgb(209, 229, 255));
+  padding-top: 30px;
+  padding-bottom: 50px;
+  box-sizing: border-box;
+  min-height: 100vh;
+  .page-center {
+    max-width: 1400px;
+    margin: 0 auto;
+
+    .current-player-name{
+      text-align: center;
+    }
+    .grid-area-container{
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .ships-container{
+        height: 300px;
+        width: 300px;
+        border: 1px solid green;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        .ship{
+          display: flex;
+          flex-direction: column;
+          background-color:rgba(144, 229, 255, 0.614);
+          border: 1px solid rgba(0, 0, 0, 0.594);
+          z-index:100;
+
+          &.ship-selected{
+            flex-direction: column;
+            box-shadow: 0 0 10px rgba(0, 255, 170, 0.447);
+          }
+          .ship-slice{
+            width:40px;
+            height:40px
+          }
+        }
+      }
+      .action-buttons{
+        display: flex;
+        flex-direction: column;
+        margin-left: 20px;
+        .action-button{
+          margin: 20px;
+        }
+      }
+    }
+  }
+}

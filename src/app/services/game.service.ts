@@ -20,4 +20,5 @@ export class GameService {
       isGameFinished: {id:0, name: 'ali', points: 100,  coalitionId:0,coalition:"asd"},
     });
   }
+  
 }
