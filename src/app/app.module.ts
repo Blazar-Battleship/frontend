@@ -32,6 +32,7 @@ import { PlayerService } from './services/player.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
 import { EndComponent } from './components/end/end.component';
+import { GameService } from './services/game.service';
 
 
 
@@ -68,7 +69,7 @@ import { EndComponent } from './components/end/end.component';
     MatSidenavModule,
     MatToolbarModule
   ],
-  providers: [PlayerService],
+  providers: [PlayerService, GameService],
   bootstrap: [AppComponent]
 })
 

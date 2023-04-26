@@ -8,14 +8,14 @@ import { HttpClient } from '@angular/common/http';
 })
 
 export class EndComponent implements OnInit {
-  leaderboard!: any[];
+  players!: any[];
 
   constructor(private http: HttpClient) { }
 
   ngOnInit(): void {
     this.http.get<any[]>('https://localhost:7174/api/Games')
       .subscribe(data => {
-        return this.leaderboard; //
+        return this.players; //
       });
   }
 }
