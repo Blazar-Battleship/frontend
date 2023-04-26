@@ -6,12 +6,26 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class PlayerService {
-  private baseUrl = 'https://jsonplaceholder.typicode.com/posts';
-
+  private baseUrl = 'https://localhost:7174/api/Games';
+  game = [
+    {
+      "id": 0,
+      "name": "string",
+      "points": 0
+    },{
+      "id": 0,
+      "name": "string",
+      "points": 0
+    },{
+      "id": 0,
+      "name": "string",
+      "points": 0
+    }
+  ]
+  
   constructor(private http: HttpClient) {}
 
   sendPlayers(players: any[]): Observable<any> {
-    const url = `${this.baseUrl}`;
-    return this.http.post<any>(url, players);
+    return this.http.post(this.baseUrl, players);
   }
 }

@@ -11,12 +11,17 @@ import { filter } from 'rxjs/operators';
 export class HeaderComponent {
   registrationForm: any;
   gameEnded = false;
-  showExitIcon = false;
+  showExitIcon = true;
   constructor(private router: Router) {
     this.router.events.pipe(
       filter((event: Event): event is NavigationEnd => event instanceof NavigationEnd))
     .subscribe((value: NavigationEnd) => {
       console.log(value.url);
+      if(value.url == '/players-form') {
+        this.showExitIcon = false;
+      } else {
+        this.showExitIcon = true;
+      }
     });
 
   }
