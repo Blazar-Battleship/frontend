@@ -31,6 +31,7 @@ import { RegistrationFormComponent } from './components/registration-form/regist
 import { PlayerService } from './services/player.service';
 import { HeaderComponent } from './components/header/header.component';
 import { FooterComponent } from './components/footer/footer.component';
+import { EndComponent } from './components/end/end.component';
 
 
 
@@ -46,6 +47,7 @@ import { FooterComponent } from './components/footer/footer.component';
     RegistrationFormComponent,
     HeaderComponent,
     FooterComponent,
+    EndComponent,
   ],
   imports: [
     BrowserModule,
