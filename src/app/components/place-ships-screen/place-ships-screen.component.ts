@@ -3,6 +3,7 @@ import interact from 'interactjs';
 import { Coalition, Player, ShipSlice, Ship } from 'src/app/types';
 import { InteractEvent } from '@interactjs/types';
 import { InteractEvent as InteractEventValue } from '@interactjs/core/InteractEvent';
+import { GameService } from 'src/app/services/game.service';
 @Component({
   selector: 'app-place-ships-screen',
   templateUrl: './place-ships-screen.component.html',
@@ -64,12 +65,13 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   shipPositions: Ship[] = Array(5);
   selectedShip: undefined | any[];
   currentPlayer: Player = this.players[0];
-  currentCoalition: string = this.currentPlayer.coalition;
+  currentCoalition: string = 'red';
   isNextPlayerOpen = false;
   isStartGameOpen = false;
   redCoalitionShips: Ship[] = [];
   blueCoalitionShips: Ship[] = [];
 
+  constructor(private gameService: GameService) {}
   ngAfterViewInit(): void {
     console.log(this.shipPositions[2]);
     this.makeShipsDraggable();
@@ -132,6 +134,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
                 id: 0,
                 x: coordsArray[0],
                 y: coordsArray[1],
+                team: thisClass.currentPlayer.coalition!,
               };
               shipArray.push(coordsObj);
               cell.classList.add('occupied');
@@ -190,6 +193,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
           id: 0,
           x: coordsArray[0],
           y: coordsArray[1],
+          team: this.currentPlayer.coalition!,
         };
         shipArray.push(coordsObj);
         cell.classList.add('occupied');
@@ -310,9 +314,13 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
       this.isStartGameOpen = true;
     } else {
       this.currentPlayer = this.players[++currentPlayerIndex];
-      this.currentCoalition = this.currentPlayer.coalition;
+      this.currentCoalition = this.currentPlayer.coalition!;
       console.log(this.currentCoalition);
       this.isNextPlayerOpen = true;
     }
+  }
+
+  handleStartGame(){
+
   }
 }
