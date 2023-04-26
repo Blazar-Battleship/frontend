@@ -36,7 +36,7 @@ export class RegistrationFormComponent {
 
   getInputLength(): number {
     const playerToAdd = this.registrationForm.get('playerToAdd');
-    return playerToAdd?.value.trim().replace(/\s+/g, ' ').split(' ').join('').length;
+    return playerToAdd?.value?.trim().replace(/\s+/g, ' ').split(' ').join('').length;
   }
 
   checkInputValidity() {
