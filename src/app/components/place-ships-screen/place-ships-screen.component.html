@@ -62,7 +62,7 @@
 
   <div *ngIf="isStartGameOpen" class="start-game-screen">
     <h2>Ready to Play the game?</h2>
-    <button mat-raised-button color="primary" routerLink="/play">
+    <button mat-raised-button color="primary" (click)="handleStartGame()" routerLink="/play">
       Start
     </button>
   </div>

@@ -63,7 +63,7 @@ export class PlayScreenComponent implements OnInit {
 
   ngOnInit(): void {
     this.players.forEach((player)=>{
-      player.coalition = this.coalitions[player.coalitionId]
+      player.coalition = "red"
     })
   }
 
@@ -75,7 +75,6 @@ export class PlayScreenComponent implements OnInit {
     } else {
       this.currentPlayer = this.players[++currentPlayerIndex];
     }
-    this.currentCoalition = this.currentPlayer.coalition
     console.log(this.currentCoalition)
     this.isNextPlayerOpen = true;
   }

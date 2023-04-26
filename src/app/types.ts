@@ -12,8 +12,8 @@ export interface Player {
   id: number;
   name: string;
   points: number;
-  coalitionId: number;
-  coalition: any;
+  coalitionId?: number;
+  coalition?: string;
 }
 
 export interface Coalition {
@@ -33,6 +33,7 @@ export interface ShipSlice {
   id: number;
   x: number;
   y: number;
+  team?:string
 }
 export interface Ship {
   id: number;
