@@ -26,6 +26,6 @@ export interface Coalition {
 }
 
 export interface Game {
-  id: number;
-  coalitions: Coalition[];
+  id?: number;
+  coalitions?: Coalition[];
 }

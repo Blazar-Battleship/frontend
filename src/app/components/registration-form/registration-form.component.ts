@@ -94,7 +94,7 @@ export class RegistrationFormComponent {
       if (existingPlayer) {
         playerToAdd.setErrors({ exists: true });
         return;
-      } else if (value.length > 20) {
+      } else if (value.length > 10) {
         playerToAdd.setErrors({ maxlength: true });
         return;
       }
