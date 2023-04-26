@@ -1,5 +1,5 @@
 export interface GridCell {
-  coordinates: [x: number, y: number];
+  coordinates: {x: number, y: number;}
   status: undefined | boolean;
 }
 export interface AttackResult {
@@ -33,12 +33,8 @@ export interface ShipSlice {
   id: number;
   x: number;
   y: number;
-  team?:string
+  team?: string;
 }
 export interface Ship {
-  id: number;
-  shipSlices:ShipSlice[]
+  shipSlices: ShipSlice[];
 }
-
-
-

@@ -7,11 +7,11 @@
     <h2 class="turn-number">Turn {{ turnNumber }}</h2>
     <div class="grids-container">
       <app-play-grid
-        [enemy]="currentCoalition.id === 1"
+        [enemy]="currentCoalition =='red'" [currentPlayer]="currentPlayer" [currentCoalition]="currentCoalition"
         (finishTurn)="handleFinishTurn()"
       ></app-play-grid>
       <app-play-grid
-        [enemy]="currentCoalition.id === 0"
+        [enemy]="currentCoalition =='blue'"  [currentPlayer]="currentPlayer" [currentCoalition]="currentCoalition"
         (finishTurn)="handleFinishTurn()"
       ></app-play-grid>
     </div>

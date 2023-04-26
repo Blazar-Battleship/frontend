@@ -3,6 +3,7 @@ import { EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { PlayerService } from '../../services/player.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration-form',
@@ -19,24 +20,25 @@ export class RegistrationFormComponent {
   showError = false;
   disableAddButton = false;
 
-  constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef, private playerService: PlayerService) {
+  constructor(
+    private fb: FormBuilder,
+    private cdRef: ChangeDetectorRef,
+    private playerService: PlayerService,
+    private router: Router
+  ) {
     this.registrationForm = this.fb.group({
-      playerToAdd: [
-        '',
-        [
-          Validators.pattern(/^\S.*$/)],
-      ],
+      playerToAdd: ['', [Validators.pattern(/^\S.*$/)]],
     });
 
     this.registrationForm.get('playerToAdd')?.valueChanges.subscribe(() => {
       this.checkInputValidity();
-
     });
   }
 
   getInputLength(): number {
     const playerToAdd = this.registrationForm.get('playerToAdd');
-    return playerToAdd?.value.trim().replace(/\s+/g, ' ').split(' ').join('').length;
+    return playerToAdd?.value.trim().replace(/\s+/g, ' ').split(' ').join('')
+      .length;
   }
 
   checkInputValidity() {
@@ -44,14 +46,17 @@ export class RegistrationFormComponent {
     if (playerToAdd && playerToAdd.dirty) {
       const value = playerToAdd.value.trim();
       if (value.length > 0 && value.length <= 10) {
-        if (this.list.find((player) => player.toLowerCase() === value.toLowerCase())) {
+        if (
+          this.list.find(
+            (player) => player.toLowerCase() === value.toLowerCase()
+          )
+        ) {
           this.disableAddButton = true;
           playerToAdd.setErrors({ exists: true });
         } else {
           this.disableAddButton = false;
           playerToAdd.setErrors(null);
         }
-
       } else {
         if (value.length === 0) {
           playerToAdd.setErrors({ pattern: true });
@@ -65,7 +70,6 @@ export class RegistrationFormComponent {
     }
   }
 
-
   isValidPlayer() {
     const playerToAdd = this.registrationForm.get('playerToAdd')?.value;
     return (
@@ -78,9 +82,9 @@ export class RegistrationFormComponent {
     );
   }
 
-
   addToList() {
     const playerToAdd = this.registrationForm.get('playerToAdd');
+
     if (playerToAdd && playerToAdd.value) {
       const value = playerToAdd.value.trim();
       const pattern = /^\S.*$/;
@@ -102,10 +106,8 @@ export class RegistrationFormComponent {
       this.updateInputHint();
       this.clearInput();
       this.cdRef.detectChanges();
-
     }
   }
-
 
   clearInput() {
     const playerToAdd = this.registrationForm.get('playerToAdd');
@@ -121,7 +123,6 @@ export class RegistrationFormComponent {
     this.list.splice(index, 1);
     this.registrationForm.get('playerToAdd')?.markAsUntouched();
     this.clearInput();
-
   }
 
   updateInputHint() {
@@ -129,13 +130,12 @@ export class RegistrationFormComponent {
     this.showHint = inputLength >= 0 && inputLength < 10;
   }
 
-
   confirmPlayers() {
-    this.showExitIcon = true;
     const players = this.list.map((name) => ({ id: 0, name, points: 0 }));
     this.playerService.sendPlayers(players).subscribe({
       next: (response) => {
-        console.log('Giocatori aggiunti:', response);
+
+        this.router.navigate(["/place-ships"], { state: { game: response, players: players } })
       },
       error: (error) => {
         console.error("Errore durante l'aggiunta dei giocatori:", error);

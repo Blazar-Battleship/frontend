@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { GameService } from 'src/app/services/game.service';
-import { GridCell } from 'src/app/types';
+import { GridCell, Player } from 'src/app/types';
 import { Howl } from 'howler';
 
 @Component({
@@ -9,7 +9,9 @@ import { Howl } from 'howler';
   styleUrls: ['./play-grid.component.scss'],
 })
 export class PlayGridComponent implements OnInit {
-  @Input() enemy = false;
+  @Input() enemy = true
+  @Input() currentPlayer: Player| undefined = undefined;
+  @Input() currentCoalition = "red";
   @Output() finishTurn = new EventEmitter();
 
   gridSize = 10;
@@ -31,27 +33,29 @@ export class PlayGridComponent implements OnInit {
     let arr: GridCell[] = [];
     for (let i = 0; i < this.gridSize; i++) {
       for (let j = 0; j < this.gridSize; j++) {
-        arr.push({ coordinates: [i, j], status: undefined });
+        arr.push({ coordinates: {x:j, y:i}, status: undefined });
       }
     }
     this.grid = arr;
   }
 
-  getRandomBoolean() {
-    return Math.random() < 0.1;
-  }
+
 
   getShotResult() {
-    let result = this.game.getAttackResult(this.selectedCell!);
+    let result = this.game.getAttackResult(this.currentPlayer!.name, this.selectedCell!,"blue",);
     result.subscribe((res) => {
-      this.selectedCell!.status = res.isShipHit;
-      if ( res.isShipHit === true) {
+      console.log(res)
+
+    });
+    this.game.getIsShipHit(this.selectedCell!, "blue").subscribe((res=>{
+      this.selectedCell!.status = res;
+      if ( res === true) {
         this.hitSound.play();
       } else {
 
         this.splashSound.play();
       }
-    });
+    }))
     this.isGridDisabled = true;
     console.log(this.selectedCell?.status);
   }
@@ -61,5 +65,5 @@ export class PlayGridComponent implements OnInit {
     this.isGridDisabled = false;
     this.selectedCell = undefined;
   }
-  test() {}
+
 }

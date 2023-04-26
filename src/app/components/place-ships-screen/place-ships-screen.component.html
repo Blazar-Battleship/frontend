@@ -47,9 +47,7 @@
       </div>
     </div>
 
-    <div *ngIf="isNextPlayerOpen" class="next-player-screen">
-      <h2>{{ currentPlayer.name }} it's your turn! Press start</h2>
-    </div>
+
   </div>
 
 
@@ -62,7 +60,7 @@
 
   <div *ngIf="isStartGameOpen" class="start-game-screen">
     <h2>Ready to Play the game?</h2>
-    <button mat-raised-button color="primary" (click)="handleStartGame()" routerLink="/play">
+    <button mat-raised-button color="primary" (click)="handleStartGame()">
       Start
     </button>
   </div>

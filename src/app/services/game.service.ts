@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { AttackResult, GridCell } from '../types';
-import { of , Observable} from 'rxjs';
+import { AttackResult, Game, GridCell, Ship } from '../types';
+import { of, Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 function getRandomBoolean() {
   return Math.random() < 0.5;
 }
@@ -8,17 +9,40 @@ function getRandomBoolean() {
   providedIn: 'root',
 })
 export class GameService {
+  baseUrl = 'https://localhost:7174/api/';
 
+  constructor(private http: HttpClient) {}
 
-  constructor() {}
-
-
-  getAttackResult(gridCell: GridCell): Observable<AttackResult> {
-    return  of({
-      isShipHit: getRandomBoolean(),
-      isShipSunk: false,
-      isGameFinished: {id:0, name: 'ali', points: 100,  coalitionId:0,coalition:"asd"},
-    });
+  sendBlueShips(blueShips: Ship[]) {
+    const url = this.baseUrl + 'Grids/blu';
+    return this.http.post(url, blueShips);
   }
-  
+
+  sendRedShips(redShips: Ship[]) {
+    const url = this.baseUrl + 'Grids/rossa';
+    return this.http.post(url, redShips);
+  }
+
+  getGame() {
+    return this.http.get<Game>(this.baseUrl + 'Games');
+  }
+
+  getAttackResult(
+    player: string,
+    gridcell: GridCell,
+    team: string
+  ): Observable<any> {
+    const url = this.baseUrl + 'Grids/' + player + '/' + team;
+
+    return this.http.post(url, gridcell.coordinates);
+  }
+
+  getIsShipHit(
+    gridcell: GridCell,
+    team: string
+  ): Observable<any> {
+    const url = this.baseUrl + 'Grids/' + team;
+
+    return this.http.post(url, gridcell.coordinates);
+  }
 }

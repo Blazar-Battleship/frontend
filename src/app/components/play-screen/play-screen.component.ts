@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Navigation, Router } from '@angular/router';
+import { GameService } from 'src/app/services/game.service';
 import { Coalition, Player } from 'src/app/types';
 
 @Component({
@@ -7,76 +9,55 @@ import { Coalition, Player } from 'src/app/types';
   styleUrls: ['./play-screen.component.scss'],
 })
 export class PlayScreenComponent implements OnInit {
-  players: Player[] = [
-    {
-      id: 0,
-      name: 'Ali',
-      points: 0,
-      coalitionId: 0,
-      coalition: undefined,
-    },
-    {
-      id: 1,
-      name: 'Miguel',
-      points: 0,
-      coalitionId: 1,
-      coalition: undefined,
-    },
-    {
-      id: 2,
-      name: 'Ilaria',
-      points: 0,
-      coalitionId: 0,
-      coalition: undefined,
-    },
-    {
-      id: 3,
-      name: 'Giulia',
-      points: 0,
-      coalitionId: 1,
-      coalition: undefined,
-    },
-  ];
-
-  coalitions: Coalition[] = [
-    {
-      id: 0,
-      name: 'any',
-      gameId: 0,
-      game: 'any',
-      grids: [],
-      players: this.players,
-    },
-    {
-      id: 1,
-      name: 'any',
-      gameId: 0,
-      game: 'any',
-      grids: [],
-      players: this.players,
-    },
-  ];
-  currentCoalition:Coalition = this.coalitions[0];
-  currentPlayer:Player  = this.players[0]
+  coalitions: Coalition[] = [];
+  currentPlayer: Player = { id: 0, name: '0', points: 0 };
+  currentCoalition: string = 'red';
+  players: Player[] = [];
   turnNumber = 1;
   isNextPlayerOpen = false;
 
+  constructor(private gameService: GameService, private router: Router) {
+    let nav: Navigation = this.router.getCurrentNavigation()!;
+    if (nav.extras && nav.extras.state) {
+      this.players = nav.extras.state['players'] as Player[];
+    }
+  }
+
   ngOnInit(): void {
-    this.players.forEach((player)=>{
-      player.coalition = "red"
-    })
+    this.currentPlayer = this.players[0];
+
+    this.gameService.getGame().subscribe((res) => {
+      this.coalitions = res.coalitions!;
+      this.currentCoalition = this.coalitions
+        .find((coalition) =>
+          Boolean(
+            coalition.players.find(
+              (p) => p.name.trim() == this.currentPlayer.name
+            )
+          )
+        )!
+        .name.trim();
+    });
   }
 
   handleFinishTurn() {
-    let currentPlayerIndex = this.players.findIndex(p=> p === this.currentPlayer)
+    let currentPlayerIndex = this.players.findIndex(
+      (p) => p === this.currentPlayer
+    );
     if (currentPlayerIndex + 1 === this.players.length) {
       this.currentPlayer = this.players[0];
       this.turnNumber++;
     } else {
       this.currentPlayer = this.players[++currentPlayerIndex];
     }
-    console.log(this.currentCoalition)
     this.isNextPlayerOpen = true;
+    this.currentCoalition = this.coalitions
+      .find((coalition) =>
+        Boolean(
+          coalition.players.find((p) => p.name == this.currentPlayer.name)
+        )
+      )!
+      .name.trim();
   }
 
   closeNextPlayer() {

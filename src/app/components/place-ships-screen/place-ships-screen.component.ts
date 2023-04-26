@@ -1,77 +1,53 @@
-import { AfterViewInit, Component, ViewEncapsulation } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ViewEncapsulation,
+  OnInit,
+} from '@angular/core';
 import interact from 'interactjs';
 import { Coalition, Player, ShipSlice, Ship } from 'src/app/types';
 import { InteractEvent } from '@interactjs/types';
-import { InteractEvent as InteractEventValue } from '@interactjs/core/InteractEvent';
 import { GameService } from 'src/app/services/game.service';
+import { PlayerService } from 'src/app/services/player.service';
+import { Navigation, Router } from '@angular/router';
 @Component({
   selector: 'app-place-ships-screen',
   templateUrl: './place-ships-screen.component.html',
   styleUrls: ['./place-ships-screen.component.scss'],
   encapsulation: ViewEncapsulation.None,
 })
-export class PlaceShipsScreenComponent implements AfterViewInit {
-  players: Player[] = [
-    {
-      id: 0,
-      name: 'Ali',
-      points: 0,
-      coalitionId: 0,
-      coalition: 'blue',
-    },
-    {
-      id: 1,
-      name: 'Miguel',
-      points: 0,
-      coalitionId: 1,
-      coalition: 'red',
-    },
-    {
-      id: 2,
-      name: 'Ilaria',
-      points: 0,
-      coalitionId: 0,
-      coalition: 'blue',
-    },
-    {
-      id: 3,
-      name: 'Giulia',
-      points: 0,
-      coalitionId: 1,
-      coalition: 'red',
-    },
-  ];
-
-  coalitions: Coalition[] = [
-    {
-      id: 0,
-      name: 'blue',
-      gameId: 0,
-      game: 'any',
-      grids: [],
-      players: [this.players[0], this.players[2]],
-    },
-    {
-      id: 1,
-      name: 'red',
-      gameId: 0,
-      game: 'any',
-      grids: [],
-      players: [this.players[1], this.players[3]],
-    },
-  ];
-
+export class PlaceShipsScreenComponent implements AfterViewInit, OnInit {
+  players: Player[] = [];
+  coalitions: Coalition[] = [];
   ships = [Array(6), Array(5), Array(4), Array(4), Array(3)];
   shipPositions: Ship[] = Array(5);
   selectedShip: undefined | any[];
-  currentPlayer: Player = this.players[0];
+  currentPlayer: Player = { id: 0, name: '0', points: 0 };
   currentCoalition: string = 'red';
   isNextPlayerOpen = false;
   isStartGameOpen = false;
   redCoalitionShips: Ship[] = [];
   blueCoalitionShips: Ship[] = [];
 
-  constructor(private gameService: GameService) {}
+  constructor(
+    private gameService: GameService,
+    private playerService: PlayerService,
+    private router: Router
+  ) {
+    let nav: Navigation = this.router.getCurrentNavigation()!;
+    if (nav.extras && nav.extras.state) {
+      this.players = nav.extras.state['players'] as Player[];
+      this.coalitions = nav.extras.state['game'].coalitions;
+    }
+    this.currentPlayer = this.players[0];
+    this.currentCoalition = this.coalitions.find((coalition) =>
+      Boolean(coalition.players.find((p) => p.name == this.currentPlayer.name))
+    )!.name;
+
+    console.log('currentCoalition', this.currentCoalition);
+  }
+
+  ngOnInit(): void {}
   ngAfterViewInit(): void {
     console.log(this.shipPositions[2]);
     this.makeShipsDraggable();
@@ -134,13 +110,12 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
                 id: 0,
                 x: coordsArray[0],
                 y: coordsArray[1],
-                team: thisClass.currentPlayer.coalition!,
+                team: thisClass.currentCoalition,
               };
               shipArray.push(coordsObj);
               cell.classList.add('occupied');
             });
             thisClass.shipPositions[Number(target.id)] = {
-              id: Number(target.id),
               shipSlices: shipArray,
             };
           } else {
@@ -193,13 +168,12 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
           id: 0,
           x: coordsArray[0],
           y: coordsArray[1],
-          team: this.currentPlayer.coalition!,
+          team: this.currentCoalition,
         };
         shipArray.push(coordsObj);
         cell.classList.add('occupied');
       });
       this.shipPositions[Number(selectedShipElement.id)] = {
-        id: Number(selectedShipElement.id),
         shipSlices: shipArray,
       };
     } else {
@@ -265,6 +239,8 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   }
 
   handleClearAll() {
+    this.shipPositions = Array(5);
+
     const shipsContainer = document.querySelector('.ships-container');
     const ships: NodeListOf<HTMLDivElement> =
       document.querySelectorAll('.ship');
@@ -296,7 +272,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
   }
 
   handleFinishTurn() {
-    if (this.currentPlayer.coalition === 'red') {
+    if (this.currentCoalition == 'red') {
       this.redCoalitionShips.push(...this.shipPositions);
     } else {
       this.blueCoalitionShips.push(...this.shipPositions);
@@ -304,7 +280,6 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
 
     console.log('blueCoalitionShips', this.blueCoalitionShips);
     console.log('redCoalitionShips', this.redCoalitionShips);
-    this.shipPositions = Array(5);
     this.handleClearAll();
     let currentPlayerIndex = this.players.findIndex(
       (p) => p === this.currentPlayer
@@ -314,13 +289,20 @@ export class PlaceShipsScreenComponent implements AfterViewInit {
       this.isStartGameOpen = true;
     } else {
       this.currentPlayer = this.players[++currentPlayerIndex];
-      this.currentCoalition = this.currentPlayer.coalition!;
+      this.currentCoalition = this.coalitions.find((coalition) =>
+        Boolean(
+          coalition.players.find((p) => p.name == this.currentPlayer.name)
+        )
+      )!.name;
       console.log(this.currentCoalition);
       this.isNextPlayerOpen = true;
     }
   }
 
-  handleStartGame(){
+  handleStartGame() {
+    this.gameService.sendBlueShips(this.blueCoalitionShips).subscribe(res=>console.log(res));
+    this.gameService.sendRedShips(this.redCoalitionShips).subscribe(res=>console.log(res));
 
+    this.router.navigate(['/play'], { state: { players: this.players } });
   }
 }

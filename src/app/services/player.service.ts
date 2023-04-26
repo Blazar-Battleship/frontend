@@ -8,11 +8,13 @@ import { Game } from '../types';
 })
 export class PlayerService {
   private baseUrl = 'https://localhost:7174/api/Games';
-  game: Game = {}
 
+  
   constructor(private http: HttpClient) {}
 
   sendPlayers(players: any[]): Observable<any> {
-     return this.http.post(this.baseUrl, players);
+    return this.http.post(this.baseUrl, players);
   }
+
+
 }
