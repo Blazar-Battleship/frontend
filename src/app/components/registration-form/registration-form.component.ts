@@ -43,7 +43,7 @@ export class RegistrationFormComponent {
     const playerToAdd = this.registrationForm.get('playerToAdd');
     if (playerToAdd && playerToAdd.dirty) {
       const value = playerToAdd.value.trim();
-      if (value.length > 0 && value.length <= 20) {
+      if (value.length > 0 && value.length <= 10) {
         if (this.list.find((player) => player.toLowerCase() === value.toLowerCase())) {
           this.disableAddButton = true;
           playerToAdd.setErrors({ exists: true });
@@ -55,7 +55,7 @@ export class RegistrationFormComponent {
       } else {
         if (value.length === 0) {
           playerToAdd.setErrors({ pattern: true });
-        } else if (value.length > 20) {
+        } else if (value.length > 10) {
           playerToAdd.setErrors({ maxlength: true });
         }
 
@@ -72,7 +72,7 @@ export class RegistrationFormComponent {
       !this.disableAddButton &&
       playerToAdd &&
       playerToAdd.trim().length > 0 &&
-      playerToAdd.length <= 20 &&
+      playerToAdd.length <= 10 &&
       !this.registrationForm.get('playerToAdd')?.hasError('maxlength') &&
       !this.registrationForm.get('playerToAdd')?.hasError('exists')
     );
@@ -126,7 +126,7 @@ export class RegistrationFormComponent {
 
   updateInputHint() {
     const inputLength = this.getInputLength();
-    this.showHint = inputLength >= 0 && inputLength < 20;
+    this.showHint = inputLength >= 0 && inputLength < 10;
   }
 
 
