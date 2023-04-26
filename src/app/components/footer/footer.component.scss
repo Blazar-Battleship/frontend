@@ -5,6 +5,9 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
 
   .footer-content {
     display: flex;
@@ -17,15 +20,8 @@ footer {
 
     .icon {
       margin: 0 10px;
-      font-size: 20px;
+      font-size: 14px;
       color: #333;
       cursor: pointer;
     }
-
-    a {
-      font-size: 14px;
-      color: #333;
-      text-decoration: none;
-    }
-  }
-}
+  }}
