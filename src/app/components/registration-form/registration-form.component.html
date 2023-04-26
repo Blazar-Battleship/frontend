@@ -1,4 +1,6 @@
 <div class="page-container">
+
+
   <div class="headings">
     <h1>Ready to set sails?</h1>
     <h2 *ngIf="list.length < 2; else confirmCrew">
@@ -12,8 +14,12 @@
     <h4 *ngIf="list.length >= 2">Up to 6 fleet Commanders</h4>
   </div>
 
+
+
   <form [formGroup]="registrationForm" novalidate (submit)="addToList()">
+
     <mat-form-field *ngIf="list.length < 6">
+
       <mat-label>Username</mat-label>
       <input
         matInput
@@ -29,10 +35,10 @@
       >
         <mat-icon>clear</mat-icon>
       </button>
-      <mat-hint *ngIf="!showError" align="end"
+      <mat-hint align="end"
         >{{
           getInputLength() || 0
-        }}/20</mat-hint
+        }}/10</mat-hint
       >
 
       <mat-error
@@ -50,21 +56,23 @@
         <ng-container
           *ngIf="registrationForm.get('playerToAdd')?.hasError('maxlength')"
         >
-          Error: max 20chars
+          Error: max 10chars
         </ng-container>
         <ng-container
           *ngIf="registrationForm.get('playerToAdd')?.hasError('exists')"
         >
-          Error: username already exists
+          Error: already exists
         </ng-container>
       </mat-error>
     </mat-form-field>
 
+
     <div *ngIf="list.length < 6">
+
       <button
         mat-raised-button
         color="primary"
-        type="button"
+        type="submit"
         [disabled]="!isValidPlayer()"
         (click)="addToList(); registrationForm.get('playerToAdd')?.reset()"
       >
@@ -77,6 +85,7 @@
     <ul>
       <li *ngFor="let player of list">
         {{ player }}
+
         <button
           mat-icon-button
           color="warn"
@@ -93,9 +102,10 @@
           type="button"
           class="confirm"
           (click)="confirmPlayers()"
+          routerLink="/place-ships"
           [disabled]="list.length < 2"
         >
-          Confirm players
+          Confirm
         </button>
       </div>
     </ul>
