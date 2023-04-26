@@ -1,4 +1,19 @@
-/* You can add global styles to this file, and also import other style files */
+// @include mat-core();
+
+// $primary: mat-palette($mat-indigo);
+// $accent: mat-palette($mat-pink, A200, A100, A400);
+// $warn: mat-palette($mat-red);
+// $theme: mat-light-theme($primary, $accent, $warn);
+
+// $dark-primary: mat-palette($mat-grey, 700);
+// $dark-accent: mat-palette($mat-pink, A200, A100, A400);
+// $dark-warn: mat-palette($mat-red);
+// $dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+
+// @include angular-material-theme($theme);
+// @include angular-material-theme($dark-theme);
+
+
 *{
   margin:0;
   padding:0;

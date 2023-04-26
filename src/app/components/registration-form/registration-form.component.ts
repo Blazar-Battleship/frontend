@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { EventEmitter, Output } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 import { PlayerService } from '../../services/player.service';
@@ -10,13 +11,15 @@ import { PlayerService } from '../../services/player.service';
   providers: [PlayerService],
 })
 export class RegistrationFormComponent {
+  showExitIcon: boolean = false;
+
   registrationForm: FormGroup;
   list: string[] = [];
   showHint = false;
   showError = false;
   disableAddButton = false;
 
-  constructor(private fb: FormBuilder, private playerService: PlayerService) {
+  constructor(private fb: FormBuilder, private cdRef: ChangeDetectorRef, private playerService: PlayerService) {
     this.registrationForm = this.fb.group({
       playerToAdd: [
         '',
@@ -27,6 +30,7 @@ export class RegistrationFormComponent {
 
     this.registrationForm.get('playerToAdd')?.valueChanges.subscribe(() => {
       this.checkInputValidity();
+
     });
   }
 
@@ -47,20 +51,19 @@ export class RegistrationFormComponent {
           this.disableAddButton = false;
           playerToAdd.setErrors(null);
         }
-       // this.showError = false;
+
       } else {
         if (value.length === 0) {
           playerToAdd.setErrors({ pattern: true });
         } else if (value.length > 20) {
           playerToAdd.setErrors({ maxlength: true });
         }
+
         this.disableAddButton = false;
         this.showError = true;
       }
     }
   }
-
-
 
 
   isValidPlayer() {
@@ -96,9 +99,13 @@ export class RegistrationFormComponent {
         return;
       }
       this.list.push(value);
+      this.updateInputHint();
       this.clearInput();
+      this.cdRef.detectChanges();
+
     }
   }
+
 
   clearInput() {
     const playerToAdd = this.registrationForm.get('playerToAdd');
@@ -107,22 +114,24 @@ export class RegistrationFormComponent {
     playerToAdd?.markAsPristine();
     playerToAdd?.updateValueAndValidity();
     this.showError = false;
+    this.disableAddButton = true;
   }
 
   removeFromList(index: number) {
     this.list.splice(index, 1);
     this.registrationForm.get('playerToAdd')?.markAsUntouched();
-    this.showError = false;
-  this.disableAddButton = false;
+    this.clearInput();
+
   }
 
   updateInputHint() {
     const inputLength = this.getInputLength();
-    this.showHint = inputLength > 0 && inputLength < 20;
+    this.showHint = inputLength >= 0 && inputLength < 20;
   }
 
 
   confirmPlayers() {
+    this.showExitIcon = true;
     const players = this.list.map((name) => ({ id: 0, name, points: 0 }));
     this.playerService.sendPlayers(players).subscribe({
       next: (response) => {
