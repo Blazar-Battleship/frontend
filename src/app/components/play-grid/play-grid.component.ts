@@ -76,4 +76,6 @@ export class PlayGridComponent implements OnInit {
       this.selectedCell = undefined;
     }
   }
+
+
 }

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Navigation, Router } from '@angular/router';
 import { GameService } from 'src/app/services/game.service';
+import { PlayerService } from 'src/app/services/player.service';
 import { Coalition, Player } from 'src/app/types';
 
 @Component({
@@ -13,11 +14,18 @@ export class PlayScreenComponent implements OnInit {
   currentPlayer: Player = { id: 0, name: '0', points: 0 };
   currentCoalition: string = '';
   players: Player[] = [];
+  playersLeaderboard: Player[] = [];
+
   turnNumber = 1;
   isNextPlayerOpen = false;
   gridSize = 10;
+  leaderboardOpen = false;
 
-  constructor(private gameService: GameService, private router: Router) {
+  constructor(
+    private gameService: GameService,
+    private router: Router,
+    private playerService: PlayerService
+  ) {
     let nav: Navigation = this.router.getCurrentNavigation()!;
     if (nav.extras && nav.extras.state) {
       this.players = nav.extras.state['players'] as Player[];
@@ -70,5 +78,15 @@ export class PlayScreenComponent implements OnInit {
 
   closeNextPlayer() {
     this.isNextPlayerOpen = false;
+  }
+
+  openLeaderboard() {
+    this.playerService.getPlayers().subscribe((res) => {
+      this.playersLeaderboard = res.sort((a, b) => (a.points < b.points ? 1 : -1));
+      this.leaderboardOpen = true;
+    });
+  }
+  closeLeaderboard() {
+    this.leaderboardOpen = false;
   }
 }

@@ -1,6 +1,6 @@
 <div class="page-container">
   <div class="page-center">
-    <button mat-raised-button color="primary" class="leaderboard-button">
+    <button mat-raised-button color="primary" class="leaderboard-button" (click)="openLeaderboard()">
       <ng-icon name="tablerTrophyFilled" size="24"></ng-icon>
     </button>
     <h1 class="currentPlayerName">{{ currentPlayer.name }} is playing</h1>
@@ -23,4 +23,21 @@
       </button>
     </div>
   </div>
+</div>
+
+<div class="leaderboard-center" *ngIf="leaderboardOpen">
+
+  <div  class="leaderboard-container">
+    <button mat-raised-button color="primary" (click)="closeLeaderboard()">
+      x
+    </button>
+    <div *ngFor="let player of playersLeaderboard" class="leaderboard-row">
+   <span>
+    {{ player.name }}
+   </span>
+   <span>
+    {{ player.points }}
+   </span>
+  </div>
+</div>
 </div>
