@@ -13,6 +13,8 @@ const routes: Routes = [
   {path:"players-form" , component:RegistrationFormComponent},
   {path:"leaderboard" , component:LeaderboardScreenComponent},
   {path:"" , pathMatch:"full", redirectTo:"/players-form"},
+  {path:"**" , redirectTo:"/home"},
+
 
 ];
 
