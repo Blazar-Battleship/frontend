@@ -18,7 +18,7 @@ export class PlayGridComponent implements OnInit {
   grid: GridCell[] = [];
   selectedCell: undefined | GridCell = undefined;
   isGridDisabled = false;
-  isGameFinished = true;
+  isGameFinished = false;
   winner : string | undefined
 
   // sound

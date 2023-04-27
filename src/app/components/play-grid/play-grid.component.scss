@@ -65,6 +65,14 @@
   width: 400px;
   height: 300px;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: white;
+  padding:30px;
+  border-radius: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+  z-index: 300;
+  
+
 }

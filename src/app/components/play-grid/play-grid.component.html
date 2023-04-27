@@ -34,6 +34,9 @@
 
   <div *ngIf="isGameFinished" class="game-finished">
     <h2>{{winner}} won! Click the button to see the leaderboard</h2>
+    <button mat-raised-button color="primary" routerLink="/leaderboard">
+      Finish Game
+    </button>
     <button></button>
   </div>
 </div>

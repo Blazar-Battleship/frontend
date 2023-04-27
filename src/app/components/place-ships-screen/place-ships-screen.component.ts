@@ -19,8 +19,8 @@ import { Navigation, Router } from '@angular/router';
 export class PlaceShipsScreenComponent implements AfterViewInit, OnInit {
   players: Player[] = [];
   coalitions: Coalition[] = [];
-  ships = [Array(6), Array(5), Array(4), Array(4), Array(3)];
-  shipPositions: Ship[] = Array(5);
+  ships = [Array(5), Array(4), Array(3), Array(2), Array(1)];
+  shipPositions: Ship[] = Array(this.ships.length);
   selectedShip: undefined | any[];
   currentPlayer: Player = { id: 0, name: '0', points: 0 };
   currentCoalition: string = 'red';
@@ -239,7 +239,7 @@ export class PlaceShipsScreenComponent implements AfterViewInit, OnInit {
   }
 
   handleClearAll() {
-    this.shipPositions = Array(5);
+    this.shipPositions = Array(this.ships.length);
 
     const shipsContainer = document.querySelector('.ships-container');
     const ships: NodeListOf<HTMLDivElement> =

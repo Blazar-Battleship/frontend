@@ -1,0 +1,14 @@
+<div class="page-container">
+  <div class="page-center">
+    <div class="leaderboard-container">
+      <div *ngFor="let player of players" class="leaderboard-row">
+       <span>
+        {{ player.name }}
+       </span>
+       <span>
+        {{ player.points }}
+       </span>
+      </div>
+    </div>
+  </div>
+</div>
