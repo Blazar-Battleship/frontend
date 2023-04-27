@@ -9,15 +9,17 @@ import { Howl } from 'howler';
   styleUrls: ['./play-grid.component.scss'],
 })
 export class PlayGridComponent implements OnInit {
-  @Input() enemy = true
-  @Input() currentPlayer: Player| undefined = undefined;
-  @Input() currentCoalition = "red";
+  @Input() enemy = true;
+  @Input() gridSize = 10;
+  @Input() currentPlayer: Player | undefined = undefined;
+  @Input() currentCoalition = 'red';
   @Output() finishTurn = new EventEmitter();
 
-  gridSize = 10;
   grid: GridCell[] = [];
   selectedCell: undefined | GridCell = undefined;
   isGridDisabled = false;
+  isGameFinished = true;
+  winner : string | undefined
 
   // sound
   hitSound = new Howl({
@@ -33,37 +35,45 @@ export class PlayGridComponent implements OnInit {
     let arr: GridCell[] = [];
     for (let i = 0; i < this.gridSize; i++) {
       for (let j = 0; j < this.gridSize; j++) {
-        arr.push({ coordinates: {x:j, y:i}, status: undefined });
+        arr.push({ coordinates: { x: j, y: i }, status: undefined });
       }
     }
     this.grid = arr;
   }
 
-
-
   getShotResult() {
-    let result = this.game.getAttackResult(this.currentPlayer!.name, this.selectedCell!,"blue",);
+    let enemy;
+    enemy = this.currentCoalition === 'red' ? 'blue' : 'red';
+    let result = this.game.getAttackResult(
+      this.currentPlayer!.name,
+      this.selectedCell!,
+      enemy
+    );
     result.subscribe((res) => {
-      console.log(res)
-
-    });
-    this.game.getIsShipHit(this.selectedCell!, "blue").subscribe((res=>{
-      this.selectedCell!.status = res;
-      if ( res === true) {
+      console.log(res);
+      this.selectedCell!.status = res.colpita;
+      if (res.colpita === true) {
         this.hitSound.play();
       } else {
-
         this.splashSound.play();
       }
-    }))
+
+      if (res.finita) {
+        this.winner = res.player.name
+        this.isGameFinished = true;
+      }
+    });
+
     this.isGridDisabled = true;
     console.log(this.selectedCell?.status);
   }
 
   handleTurnFinished() {
-    this.finishTurn.emit();
-    this.isGridDisabled = false;
-    this.selectedCell = undefined;
-  }
+    if(!this.isGameFinished){
 
+      this.finishTurn.emit();
+      this.isGridDisabled = false;
+      this.selectedCell = undefined;
+    }
+  }
 }

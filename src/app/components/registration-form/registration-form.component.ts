@@ -134,6 +134,7 @@ export class RegistrationFormComponent {
     const players = this.list.map((name) => ({ id: 0, name, points: 0 }));
     this.playerService.sendPlayers(players).subscribe({
       next: (response) => {
+        console.log(response)
 
         this.router.navigate(["/place-ships"], { state: { game: response, players: players } })
       },

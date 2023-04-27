@@ -31,4 +31,9 @@
       </button>
     </ng-template>
   </div>
+
+  <div *ngIf="isGameFinished" class="game-finished">
+    <h2>{{winner}} won! Click the button to see the leaderboard</h2>
+    <button></button>
+  </div>
 </div>

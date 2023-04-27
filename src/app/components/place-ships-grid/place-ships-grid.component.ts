@@ -1,4 +1,4 @@
-import { Component, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { GridCell } from 'src/app/types';
 
 @Component({
@@ -8,10 +8,9 @@ import { GridCell } from 'src/app/types';
 })
 export class PlaceShipsGridComponent implements OnInit, OnChanges{
 
-  gridSize = 10;
+  @Input() gridSize = 10;
   grid: GridCell[] = [];
   occupiedCells: undefined | any[] = undefined;
-
 
   ngOnInit(): void {
     let arr: GridCell[] = [];

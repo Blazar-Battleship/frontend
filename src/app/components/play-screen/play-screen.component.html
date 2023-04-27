@@ -8,11 +8,11 @@
     <div class="grids-container">
       <app-play-grid
         [enemy]="currentCoalition =='red'" [currentPlayer]="currentPlayer" [currentCoalition]="currentCoalition"
-        (finishTurn)="handleFinishTurn()"
+        (finishTurn)="handleFinishTurn()" [gridSize]="gridSize"
       ></app-play-grid>
       <app-play-grid
         [enemy]="currentCoalition =='blue'"  [currentPlayer]="currentPlayer" [currentCoalition]="currentCoalition"
-        (finishTurn)="handleFinishTurn()"
+        (finishTurn)="handleFinishTurn()" [gridSize]="gridSize"
       ></app-play-grid>
     </div>
 

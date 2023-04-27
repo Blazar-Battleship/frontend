@@ -16,7 +16,7 @@
           <div *ngFor="let item of ship" class="ship-slice"></div>
         </div>
       </div>
-      <app-place-ships-grid></app-place-ships-grid>
+      <app-place-ships-grid [gridSize]="players.length * 5"></app-place-ships-grid>
       <div class="action-buttons">
         <button
           mat-raised-button

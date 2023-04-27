@@ -59,3 +59,12 @@
     bottom: 0;
   }
 }
+
+.game-finished {
+  position: fixed;
+  width: 400px;
+  height: 300px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

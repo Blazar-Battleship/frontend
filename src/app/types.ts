@@ -27,7 +27,7 @@ export interface Coalition {
 
 export interface Game {
   id?: number;
-  coalitions?: Coalition[];
+  coalitions: Coalition[];
 }
 export interface ShipSlice {
   id: number;

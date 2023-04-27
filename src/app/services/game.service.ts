@@ -37,12 +37,5 @@ export class GameService {
     return this.http.post(url, gridcell.coordinates);
   }
 
-  getIsShipHit(
-    gridcell: GridCell,
-    team: string
-  ): Observable<any> {
-    const url = this.baseUrl + 'Grids/' + team;
 
-    return this.http.post(url, gridcell.coordinates);
-  }
 }

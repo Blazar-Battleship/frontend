@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { PlayerService } from 'src/app/services/player.service';
 
 @Component({
   selector: 'app-grid-template',
@@ -11,7 +12,9 @@ export class GridTemplateComponent implements OnInit{
   lettersRow: string[] = [];
 
 
+
   ngOnInit(): void {
+
     for (let i = 97; i < this.gridSize + 97; i++) {
       this.lettersRow.push(String.fromCharCode(i));
      }
