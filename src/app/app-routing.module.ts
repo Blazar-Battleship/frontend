@@ -5,14 +5,14 @@ import { PlaceShipsScreenComponent } from './components/place-ships-screen/place
 import { RegistrationFormComponent } from './components/registration-form/registration-form.component';
 import { LeaderboardScreenComponent } from './components/leaderboard-screen/leaderboard-screen.component';
 import { HomeScreenComponent } from './components/home-screen/home-screen.component';
+import { canDeactivate } from './guards/game.guard';
 
 const routes: Routes = [
   {path:"home" , component:HomeScreenComponent},
-  {path:"play" , component:PlayScreenComponent},
+  {path:"play" , component:PlayScreenComponent, canDeactivate:[canDeactivate]},
   {path:"place-ships" , component:PlaceShipsScreenComponent},
   {path:"players-form" , component:RegistrationFormComponent},
   {path:"leaderboard" , component:LeaderboardScreenComponent},
-  {path:"" , pathMatch:"full", redirectTo:"/players-form"},
   {path:"**" , redirectTo:"/home"},
 
 
