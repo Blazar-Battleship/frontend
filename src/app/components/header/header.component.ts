@@ -26,12 +26,6 @@ export class HeaderComponent {
 
   }
 
- quitGame() {
 
-    // //  this.http.delete('').subscribe(() => {
-    // //  this.gameEnded = true;
-    // });
-
-  }
 }
 
